@@ -73,7 +73,7 @@ summary(ols1)$coefficients
 structure(ols1)
 
 #broom creates dataframes from regression tables
-install.packages(broom)
+install.packages("broom")
 library(broom)
 
 coefs1 <- tidy(ols1, conf.int = T)
@@ -81,3 +81,18 @@ coefs1
 
 starwars%>%
   ggplot(aes())
+
+#create FE
+starwars$species <- as.factor(starwars$species)
+
+ols2 <- lm(mass ~ height + species, data = starwars)
+coefs2 <- tidy(ols2, conf.int = T)
+coefs2
+
+#reghdfe package! Don't have to create factors when using this reghdfe package
+install.packages("lfe")
+library(lfe)
+
+ols4<- felm(mass~height| species + homeworld, data = starwars %>%
+            filter(!(grepl("Jabba", name))))
+coefs4 <- tidy(ols4, conf.int = T) 
